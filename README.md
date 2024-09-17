@@ -1,15 +1,15 @@
 ## Environment Variables
 
-The environment variables should be of the following form:
+The environment variables should be of the following form in the .env file:
 
-- SHAREPOINT_EMAIL="Here you varaible"
-- SHAREPOINT_PASSWORD="Here you varaible"
-- SHAREPOINT_URL_SITE="Here you varaible"
-- SHAREPOINT_SITE_NAME="Here you varaible"
-- SHAREPOINT_DOC_LIBRAY="Here you varaible"
-- FOLDER_NAME="Here you varaible"
-- FILE_NAME=Here you varaible
-- FILE_NAME_PATTERN=Here you varaible
+- SHAREPOINT_EMAIL="Here you variable"
+- SHAREPOINT_PASSWORD="Here you variable"
+- SHAREPOINT_URL_SITE="Here you variable"
+- SHAREPOINT_SITE_NAME="Here you variable"
+- SHAREPOINT_DOC_LIBRAY="Here you variable"
+- FOLDER_NAME="Here you variable"
+- FILE_NAME="Here you variable"
+- FILE_NAME_PATTERN="Here you variable"
 
 ### FILE_NAME Variable
 
