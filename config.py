@@ -15,3 +15,8 @@ download = {
     'file_name': config('FILE_NAME'),
     'file_name_pattern': config('FILE_NAME_PATTERN')
 }
+
+mongo = {
+    'mongodb_url': config('MONGODB_URL'),
+    'mongodb_db_name': config('MONGODB_DB_NAME'),
+}
