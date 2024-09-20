@@ -7,7 +7,11 @@ from pymongo import MongoClient
 
 #Diccionario con los codigos ISO de Perú
 with open("./storage/country_iso/pe_iso.json", "r") as f:
-    departamento_iso = json.load(f)
+    department_iso = json.load(f)
+
+#Diccionario con las ciudades de Perú
+with open("./storage/country_iso/city.json", "r") as f:
+    cities = json.load(f)
 
 # Arrays para almacenar los registros modificados y los que fallaron
 updated_records = []
@@ -26,12 +30,31 @@ def extract_username(url, platform):
         elif platform == 'instagram':
             match = re.search(r'instagram\.com\/([A-Za-z0-9_.-]+)', url)
         elif platform == 'twitter':
-            match = re.search(r'x\.com\/([A-Za-z0-9_.-]+)', url)
+            # Para URLs de Twitter, el username puede estar después de 'x.com/' o ser una mención '@'
+            # Ejemplos:
+            # https://x.com/americatv_peru
+            # @exitosape
+            # El username puede tener caracteres alfanuméricos, guiones y puntos
+            match = re.search(r'x\.com\/([A-Za-z0-9_.-]+)|@([A-Za-z0-9_.-]+)', url)
+            # Buscamos el username en la URL utilizando la expresión regular para Twitter
+            # Consideramos tanto el formato de URL como el de mención
         elif platform == 'youtube':
-            match = re.search(r'youtube\.com\/channel\/([A-Za-z0-9_.-]+)', url)
+            # Para URLs de YouTube, el username puede estar en varias formas:
+            # 1. Después de 'channel/'
+            # 2. Después de 'c/'
+            # 3. Después de 'user/'
+            # Ejemplos:
+            # https://www.youtube.com/channel/UCTTXPfz9eONBspLvdEaCg2g/
+            # https://www.youtube.com/c/UCksV2nYo_YnmGTlm9od5gMg
+            # https://www.youtube.com/user/UCksV2nYo_YnmGTlm9od5gMg
+            # El username puede tener caracteres alfanuméricos, guiones y puntos
+            match = re.search(r'youtube\.com\/(?:channel\/|c\/|user\/)?([A-Za-z0-9_.-]+)', url)
+            # Buscamos el username en la URL utilizando la expresión regular para YouTube
+            # Consideramos todos los formatos posibles de URL
         elif platform == 'tiktok':
             match = re.search(r'tiktok\.com\/@([A-Za-z0-9_.-]+)', url)
         if match:
+            print(match.group(1))
             return match.group(1)  # Retornar el username extraído
         return None
     except Exception as e:
@@ -44,7 +67,7 @@ def normalize_text(text):
         # Eliminar tildes
         text = unicodedata.normalize('NFD', text).encode('ascii', 'ignore').decode('utf-8')
         # Eliminar espacios innecesarios
-        text = re.sub(r'\s+', ' ', text).strip()
+        text = re.sub(r'\s+', ' ', text).strip().title()
     return text
 
 def save_updated_documents(username, doc, platform):
@@ -95,12 +118,20 @@ def update():
             row['Provincia'] = normalize_text(row['Provincia'])
             row['Distrito'] = normalize_text(row['Distrito'])
 
-            if row['Departamento'] not in departamento_iso.keys():
-                print(row['Departamento'])
+            if row['Departamento'] not in department_iso.keys():
+                print(f'Departamento excel: {row["Departamento"]}')
                 failed_updates.append({
                     'row_index': index,
                     'Departamento': row['Departamento'],
                     'error': 'Departamento no válido'
+                })
+
+            if row['Provincia'] not in cities['peru']:
+                print(f'Provincia excel: {row['Provincia']}')
+                failed_updates.append({
+                    'row_index': index,
+                    'Provincia': row['Provincia'],
+                    'error': 'Provincia no válida'
                 })
                 continue
 
@@ -127,7 +158,7 @@ def update():
                     'prov': row['Departamento'].strip(),
                     'city': row['Provincia'].strip(),
                     'parish': row['Distrito'].strip(),
-                    'provIso': departamento_iso.get(row['Departamento'], '')
+                    'provIso': department_iso.get(row['Departamento'], '')
                 }
 
                 def process_update(collection_name, field_name, username, platform_name):
@@ -137,7 +168,7 @@ def update():
                             save_updated_documents(username, find_result[0], f'{platform_name}')
                             update_document(f'{collection_name}', f'{field_name}',username, update_data)
                         else:
-                            save_failed_updates(fb_username, f'{platform_name}')
+                            save_failed_updates(username, f'{platform_name}')
 
                 # Procesar actualizaciones para cada red social
                 process_update('localfacebook', 'username', fb_username, 'Facebook')
