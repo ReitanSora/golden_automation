@@ -1,3 +1,5 @@
+import traceback
+
 import pandas as pd
 import json
 import re
@@ -54,7 +56,6 @@ def extract_username(url, platform):
         elif platform == 'tiktok':
             match = re.search(r'tiktok\.com\/@([A-Za-z0-9_.-]+)', url)
         if match:
-            print(match.group(1))
             return match.group(1)  # Retornar el username extraído
         return None
     except Exception as e:
@@ -70,22 +71,34 @@ def normalize_text(text):
         text = re.sub(r'\s+', ' ', text).strip().title()
     return text
 
-def save_updated_documents(username, doc, platform):
+def save_updated_documents(username = 'N.A', doc = None, platform = 'N.A', row_1 = None, row_2 = None, row_3 = None):
     # Almacenar los datos del registro actualizado
-    updated_records.append({
-        'username': username,
-        '_id': doc['_id'],
-        'name': doc['name'],
-        'RedSocial': platform
-    })
+    new_item = {'_id': doc.get('_id'),
+            'name': doc.get('name'),
+            'username': username,
+            'RedSocial': platform,
+            'Province_before': doc.get('prov'),
+            'City_before': doc.get('city'),
+            'Parish_before': doc.get('parish'),
+            'Province_after': row_1,
+            'City_after': row_2,
+            'Parish_after': row_3}
+    updated_records.append(new_item)
+    del new_item
 
-def save_failed_updates(username, platform):
+def save_failed_updates(index, zone_1 = None, zone_2 = None, zone_3 = None, username = 'N.A', platform = 'N.A', fail_error = 'N.A'):
     # Si no se encuentra el documento
-    failed_updates.append({
-        'username': username,
-        'RedSocial': platform,
-        'error': 'Documento no encontrado'
-    })
+    new_item = {
+        'Índice excel': index,
+        'Username': username,
+        'Red Social': platform,
+        'Departamento': zone_1,
+        'Provincia': zone_2,
+        'Distrito': zone_3,
+        'Error': f'{fail_error}'
+    }
+    failed_updates.append(new_item)
+    del new_item
 
 def update_document(collection_name, field_name, username, update_data):
     db[f'{collection_name}'].update_one(
@@ -97,7 +110,8 @@ def update_document(collection_name, field_name, username, update_data):
 def extract_id_facebook(url):
     id_facebook = url.split("/profile.php?id=")[-1]
     find_result = list(db['localfacebook'].find({'_id': id_facebook}))
-    return find_result[0]['username']
+    return find_result[0].get('username') if len(find_result) > 0 else f'{id_facebook}'
+
 
 def update():
     # Leer el archivo Excel
@@ -106,7 +120,7 @@ def update():
     # Filtrar las columnas que necesitamos del Excel
     df_filtered = df[['Scan FB', 'Scan IG', 'Scan TW', 'Scan YT', 'Scan TK', 'Departamento', 'Provincia', 'Distrito',
                       'URL Facebook', 'URL Instagram', 'URL Twitter', 'URL YouTube', 'URL TikTok']]
-
+    del df
 
     # Recorremos cada fila del DataFrame filtrado
     for index, row in df_filtered.iterrows():
@@ -119,20 +133,12 @@ def update():
             row['Distrito'] = normalize_text(row['Distrito'])
 
             if row['Departamento'] not in department_iso.keys():
-                print(f'Departamento excel: {row["Departamento"]}')
-                failed_updates.append({
-                    'row_index': index,
-                    'Departamento': row['Departamento'],
-                    'error': 'Departamento no válido'
-                })
+                save_failed_updates(index=index + 2, zone_1=row['Departamento'], zone_2=row['Provincia'],
+                                    zone_3=row['Distrito'], fail_error='Departamento no válido')
 
             if row['Provincia'] not in cities['peru']:
-                print(f'Provincia excel: {row['Provincia']}')
-                failed_updates.append({
-                    'row_index': index,
-                    'Provincia': row['Provincia'],
-                    'error': 'Provincia no válida'
-                })
+                save_failed_updates(index = index+2,zone_1=row['Departamento'], zone_2=row['Provincia'],
+                                    zone_3=row['Distrito'], fail_error='Provincia no válida')
                 continue
 
             # Comprobamos si alguna columna de Scan tiene "Ingresada"
@@ -142,7 +148,7 @@ def update():
                 # Extraemos los usernames de las redes sociales que tengan "Ingresada" en Scan
                 fb_username = extract_username(
                     row['URL Facebook'], 'facebook') if row['Scan FB'] == 'Ingresada' else None
-                if fb_username.strip() == 'profile.php':
+                if fb_username == 'profile.php':
                     fb_username = extract_id_facebook(row['URL Facebook'])
                 ig_username = extract_username(
                     row['URL Instagram'], 'instagram') if row['Scan IG'] == 'Ingresada' else None
@@ -165,10 +171,10 @@ def update():
                     if username:
                         find_result = list(db[f'{collection_name}'].find({f'{field_name}': username}))
                         if len(find_result) > 0:
-                            save_updated_documents(username, find_result[0], f'{platform_name}')
+                            save_updated_documents(username=username, doc=find_result[0], platform=f'{platform_name}', row_1= row['Departamento'], row_2= row['Provincia'], row_3= row['Distrito'])
                             update_document(f'{collection_name}', f'{field_name}',username, update_data)
                         else:
-                            save_failed_updates(username, f'{platform_name}')
+                            save_failed_updates( index = index+2,username= username, platform=f'{platform_name}', fail_error='Usuario no encontrado en la bd')
 
                 # Procesar actualizaciones para cada red social
                 process_update('localfacebook', 'username', fb_username, 'Facebook')
@@ -179,7 +185,8 @@ def update():
 
         except Exception as e:
             # Si ocurre un error, almacenamos el índice de la fila y el error en el array de fallos
-            failed_updates.append({'row_index': index, 'error': str(e)})
+            save_failed_updates(index=index+2,fail_error=f'{traceback.format_exception(e)}')
+            pass
 
     # Convertir los arrays a DataFrames
     df_updated = pd.DataFrame(updated_records)
