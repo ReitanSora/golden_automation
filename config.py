@@ -38,3 +38,7 @@ excel = {
     'excel_subzone_4': config('EXCEL_SUBZONE_4'),
     'excel_subzone_5': config('EXCEL_SUBZONE_5'),
 }
+
+gpt = {
+    'gpt_api_key': config('GPT_API_KEY'),
+}

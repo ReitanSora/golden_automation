@@ -10,8 +10,9 @@ from ..functions.extract_username import extract
 from ..functions.normalize_text import normalize
 from ..functions.update_one_mongodb import update_one
 from ..functions.export_date import export_date
+from ..functions.correct_subzone import c_subzone_3, c_subzone_4
 
-# Diccionario con los codigos ISO de Perú
+# Diccionario con los codigos ISO de Perú y sus Departamentos
 with open("./storage/localization/iso.json", "r") as f:
     department_iso = json.load(f)
 
@@ -103,15 +104,46 @@ def update():
                 save_failed_updates(index=index + 2, subzone_2=row[excel['excel_subzone_2']], subzone_3=row[excel['excel_subzone_3']], subzone_4=row[excel['excel_subzone_4']],
                                     subzone_5=row[excel['excel_subzone_5']], contextA=row['Categoría Facebook'], typeA=row['Categoria/Criterio'], fail_error=f'{excel['excel_subzone_2']} no válido')
 
-            if row[excel['excel_subzone_3']] not in department_iso.keys():
-                save_failed_updates(index=index + 2, subzone_2=row[excel['excel_subzone_2']], subzone_3=row[excel['excel_subzone_3']], subzone_4=row[excel['excel_subzone_4']],
-                                    subzone_5=row[excel['excel_subzone_5']], contextA=row['Categoría Facebook'], typeA=row['Categoria/Criterio'], fail_error='Subnivel 3 no válido')
+            if row[excel['excel_subzone_3']] not in department_iso.keys() and row[excel['excel_subzone_3']] != "NA":
+                # Intentamos corregir el nombre del subnivel 3 usando IA
+                corrected_subzone_3 = c_subzone_3(
+                    row[excel['excel_subzone_3']])
+                print("----------------------------")
+                print("zone 3 Excel: ")
+                print(row[excel['excel_subzone_3']])
+                print("Corrección GPT: ")
+                print(corrected_subzone_3)
+                print("----------------------------")
 
-            if row[excel['excel_subzone_4']] not in cities['peru']:
-                save_failed_updates(index=index + 2, subzone_2=row[excel['excel_subzone_2']], subzone_3=row[excel['excel_subzone_3']], subzone_4=row[excel['excel_subzone_4']],
-                                    subzone_5=row[excel['excel_subzone_5']], contextA=row['Categoría Facebook'], typeA=row['Categoria/Criterio'], fail_error='Subnivel 4 no válido')
-                continue
+                if corrected_subzone_3 in department_iso.keys():
+                    # Si la IA sugiere una corrección válida, actualizamos el nombre del departamento
+                    row[excel['excel_subzone_3']] = corrected_subzone_3
+                else:
+                    # Si la corrección falla, guardamos el registro como fallido
+                    save_failed_updates(index=index + 2, subzone_2=row[excel['excel_subzone_2']], subzone_3=row[excel['excel_subzone_3']], subzone_4=row[excel['excel_subzone_4']],
+                                        subzone_5=row[excel['excel_subzone_5']], contextA=row['Categoría Facebook'], typeA=row['Categoria/Criterio'], fail_error='Subnivel 3 no válido')
 
+            if row[excel['excel_subzone_4']] not in cities['peru'] and row[excel['excel_subzone_4']] != "NA":
+                # Intentamos corregir el nombre del subnivel 4 usando IA
+                corrected_subzone_4 = c_subzone_4(
+                    row[excel['excel_subzone_4']])
+                print("----------------------------")
+                print("zone 4 Excel: ")
+                print(row[excel['excel_subzone_4']])
+                print("Corrección GPT: ")
+                print(corrected_subzone_4)
+                print("----------------------------")
+
+                if (corrected_subzone_4 in cities['peru']):
+                    # Si la IA sugiere una corrección válida, actualizamos el nombre del departamento
+                    row[excel['excel_subzone_4']] = corrected_subzone_4
+                else:
+                    save_failed_updates(index=index + 2, subzone_2=row[excel['excel_subzone_2']], subzone_3=row[excel['excel_subzone_3']], subzone_4=row[excel['excel_subzone_4']],
+                                        subzone_5=row[excel['excel_subzone_5']], contextA=row['Categoría Facebook'], typeA=row['Categoria/Criterio'], fail_error='Subnivel 4 no válido')
+                    continue
+            print("Afuera")
+            print(row[excel['excel_subzone_3']])
+            print(row[excel['excel_subzone_4']])
             # Comprobamos si alguna columna de Scan tiene "Ingresada"
             if any(row[['Scan FB', 'Scan IG', 'Scan TW', 'Scan YT', 'Scan TK']] == 'Ingresada') and not (
                     pd.isna(row[excel['excel_subzone_2']]) and pd.isna(row[excel['excel_subzone_3']]) and pd.isna(row[excel['excel_subzone_4']]) and pd.isna(row[excel['excel_subzone_5']])):
@@ -149,7 +181,9 @@ def update():
                         else:
                             save_failed_updates(index=index+2, username=username,
                                                 platform=f'{platform_name}', fail_error='Usuario no encontrado en la bd')
-
+                print("Dentro")
+                print(row[excel['excel_subzone_3']])
+                print(row[excel['excel_subzone_4']])
                 # Procesar actualizaciones para cada red social
                 process_update(mongo['mongodb_fb_collection'], mongo['mongodb_fb_field_name'],
                                fb_username, 'Facebook')
