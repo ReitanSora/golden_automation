@@ -9,6 +9,7 @@ from ..functions.validate_update_data import validate
 from ..functions.extract_username import extract
 from ..functions.normalize_text import normalize
 from ..functions.update_one_mongodb import update_one
+from ..functions.export_date import export_date
 
 # Diccionario con los codigos ISO de Perú
 with open("./storage/localization/iso.json", "r") as f:
@@ -165,4 +166,5 @@ def update():
             save_failed_updates(index=index+2, fail_error=f'{e}')
 
     export_xlsx(updated_records, failed_updates)
+    export_date()
     print('Realizado exitosamente')

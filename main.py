@@ -1,6 +1,4 @@
 from config import download
-import pandas as pd
-import os
 from utils.services.download_file import get_file, get_files, get_files_by_pattern
 from utils.services.update_document import update
 
@@ -22,4 +20,3 @@ if __name__ == '__main__':
         get_files(FOLDER_NAME)
 
     read_update_excel()
-    # os.remove('./storage/Peru.xlsx')
