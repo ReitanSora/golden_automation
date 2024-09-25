@@ -137,7 +137,6 @@ def update():
             save_failed_updates(
                 index=index + 2, fail_error='El registro no cuenta con una fecha', failed=failed_updates)
 
-    del fecha
     export_xlsx(updated_records, failed_updates)
     export_date()
     print('Realizado exitosamente')
