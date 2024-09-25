@@ -8,10 +8,10 @@ FOLDER_NAME = download['folder_name']
 FILE_NAME = download['file_name']
 FILE_NAME_PATTERN = download['file_name_pattern']
 
-def read_excel():
-    df = pd.read_excel('./storage/Peru.xlsx')
-    print(df.head())
+
+def read_update_excel():
     update()
+
 
 if __name__ == '__main__':
     if FILE_NAME != 'None':
@@ -21,7 +21,5 @@ if __name__ == '__main__':
     else:
         get_files(FOLDER_NAME)
 
-    read_excel()
-    #os.remove('./storage/Peru.xlsx')
-
-
+    read_update_excel()
+    # os.remove('./storage/Peru.xlsx')
