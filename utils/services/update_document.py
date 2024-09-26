@@ -15,6 +15,7 @@ from ..functions.correct_subzone import c_subzone_3, c_subzone_4
 from ..functions.validate_date import compare_date
 from ..functions.save_logs import *
 from ..functions.edit_excel import edit
+from ..services.coordinates_api import obtener_coordenadas
 
 # Diccionario con los codigos ISO de Perú y sus Departamentos
 with open("./storage/localization/iso.json", "r") as f:
@@ -41,7 +42,7 @@ def extract_id_facebook(url):
 
 def update():
     df_filtered = import_xlsx()
-
+    
     sub2_present = excel['excel_subzone_2'] in df_filtered.columns
 
     # Recorremos cada fila del DataFrame filtrado
@@ -52,7 +53,9 @@ def update():
                 df_filtered.at[index, col] = ''
 
         fecha = open('storage/date.txt', "r").read()
+        
         if pd.isna(row['Fecha']) == False:
+
             if compare_date(saved_date=fecha, new_date=str(row['Fecha'])):
 
                 try:
@@ -96,7 +99,6 @@ def update():
                             # Intentamos corregir el nombre del subnivel 4 usando IA
                             corrected_subzone_4 = c_subzone_4(
                                 row[excel['excel_subzone_4']])
-                            print(corrected_subzone_4)
 
                             if (corrected_subzone_4 in cities['peru']):
                                 # Si la IA sugiere una corrección válida, actualizamos el nombre del departamento
@@ -131,23 +133,47 @@ def update():
                             row['URL YouTube'], 'youtube') if row['Scan YT'] == 'Ingresada' else None
                         tk_username = extract(
                             row['URL TikTok'], 'tiktok') if row['Scan TK'] == 'Ingresada' else None
-
+                        
+                        lat_prov, lon_prov, lat_city, lon_city = obtener_coordenadas(excel['file_name'][:-5], row[excel['excel_subzone_3']], row[excel['excel_subzone_4']])
                         # campos a actualizar
                         update_data = validate(
-                            sub2_present, row, department_iso)
+                            sub2_present,
+                            row,
+                            department_iso,
+                            lat_prov,
+                            lon_prov,
+                            lat_city,
+                            lon_city
+                            )
 
                         def process_update(collection_name, field_name, username, platform_name):
                             if username:
                                 find_result = list(database_name[f'{collection_name}'].find(
                                     {f'{field_name}': username}))
                                 if len(find_result) > 0:
-                                    save_updated_documents(username=username, doc=find_result[0],
-                                                           platform=f'{platform_name}', subzone_2=row[excel['excel_subzone_2']], subzone_3=row[excel['excel_subzone_3']], subzone_4=row[excel['excel_subzone_4']], subzone_5=row[excel['excel_subzone_5']], contextA=row['Categoría Facebook'], typeA=row['Categoria/Criterio'], desc=row['Descripción Facebook'], updated=updated_records)
+                                    save_updated_documents(username=username,
+                                                           doc=find_result[0],
+                                                           platform=f'{platform_name}',
+                                                           subzone_2=row[excel['excel_subzone_2']],
+                                                           subzone_3=row[excel['excel_subzone_3']],
+                                                           subzone_4=row[excel['excel_subzone_4']],
+                                                           subzone_5=row[excel['excel_subzone_5']],
+                                                           contextA=row['Categoría Facebook'],
+                                                           typeA=row['Categoria/Criterio'],
+                                                           desc=row['Descripción Facebook'],
+                                                           latitude_prov=lat_prov,
+                                                           longitude_prov=lon_prov,
+                                                           latitude_city=lat_city,
+                                                           longitude_city=lon_city,
+                                                           updated=updated_records)
                                     update_one(database_name, f'{collection_name}',
                                                f'{field_name}', username, update_data)
                                 else:
-                                    save_failed_updates(index=index+2, username=username,
-                                                        platform=f'{platform_name}', fail_error='Usuario no encontrado en la bd', failed=failed_updates)
+                                    save_failed_updates(index=index+2,
+                                                        username=username,
+                                                        platform=f'{platform_name}',
+                                                        fail_error='Usuario no encontrado en la bd',
+                                                        failed=failed_updates)
 
                         # Procesar actualizaciones para cada red social
                         process_update(mongo['mongodb_fb_collection'], mongo['mongodb_fb_field_name'],
@@ -162,18 +188,22 @@ def update():
                                        tk_username, 'TikTok')
 
                     else:
-                        save_failed_updates(
-                            index=index+2, fail_error='No ha sido ingresado en Scan/ No posee ubicación', failed=failed_updates)
+                        save_failed_updates(index=index+2,
+                                            fail_error='No ha sido ingresado en Scan/ No posee ubicación',
+                                            failed=failed_updates)
                 except Exception as e:
-                    save_failed_updates(
-                        index=index+2, fail_error=f'{traceback.format_exception(e)}', failed=failed_updates)
+                    save_failed_updates(index=index+2,
+                                        fail_error=f'{traceback.format_exception(e)}',
+                                        failed=failed_updates)
             else:
-                save_failed_updates(
-                    index=index + 2, fail_error='No ha sido actualizado ultimamente', failed=failed_updates)
+                save_failed_updates(index=index + 2,
+                                    fail_error='No ha sido actualizado ultimamente',
+                                    failed=failed_updates)
 
         else:
-            save_failed_updates(
-                index=index + 2, fail_error='No cuenta con una fecha', failed=failed_updates)
+            save_failed_updates(index=index + 2,
+                                fail_error='No cuenta con una fecha',
+                                failed=failed_updates)
     
     export_xlsx(updated_records, failed_updates)
     export_date()

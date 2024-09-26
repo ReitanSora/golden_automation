@@ -32,6 +32,7 @@ mongo = {
 }
 
 excel = {
+    'file_name': config('FILE_NAME'),
     'excel_subzone_1': config('EXCEL_SUBZONE_1'),
     'excel_subzone_2': config('EXCEL_SUBZONE_2'),
     'excel_subzone_3': config('EXCEL_SUBZONE_3'),

@@ -1,7 +1,7 @@
 from decouple import config
 
 
-def save_updated_documents(username='N.A', doc=None, platform='N.A', subzone_2=None, subzone_3=None, subzone_4=None, subzone_5=None, contextA='N.A', typeA='N.A', desc='N.A', updated=[]):
+def save_updated_documents(username='N.A', doc=None, platform='N.A', subzone_2=None, subzone_3=None, subzone_4=None, subzone_5=None, contextA='N.A', typeA='N.A', desc='N.A', latitude_prov='N.A', longitude_prov='N.A', latitude_city='N.A', longitude_city='N.A',updated=[]):
     # Almacenar los datos del registro actualizado
     new_item = {'_id': doc.get('_id'),
                 'name': doc.get('name'),
@@ -14,6 +14,10 @@ def save_updated_documents(username='N.A', doc=None, platform='N.A', subzone_2=N
                 'contextA_before': doc.get('contextA'),
                 'typeA_before': doc.get('typeA'),
                 'desc_before': doc.get('desc'),
+                'lat_prov_before': doc.get('lat_prov'),
+                'lon_prov_before': doc.get('lon_prov'),
+                'lat_city_before': doc.get('lat_city'),
+                'lon_city_before': doc.get('lon_city'),
                 f'{config('EXCEL_SUBZONE_2')}_after': subzone_2 if subzone_2 != None else doc.get('region'),
                 f'{config('EXCEL_SUBZONE_3')}_after': subzone_3,
                 f'{config('EXCEL_SUBZONE_4')}_after': subzone_4,
@@ -21,6 +25,10 @@ def save_updated_documents(username='N.A', doc=None, platform='N.A', subzone_2=N
                 'contextA_after': contextA,
                 'typeA_after': typeA,
                 'desc_after': desc,
+                'lat_prov_after': latitude_prov,
+                'lon_prov_after': longitude_prov,
+                'lat_city_after': latitude_city,
+                'lon_city_after': longitude_city,
                 }
     updated.append(new_item)
     del new_item
