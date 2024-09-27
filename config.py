@@ -6,7 +6,10 @@ sharepoint = {
     'user_password': config('SHAREPOINT_PASSWORD'),
     'sharepoint_site': config('SHAREPOINT_URL_SITE'),
     'sharepoint_site_name': config('SHAREPOINT_SITE_NAME'),
-    'sharepoint_doc_library': config('SHAREPOINT_DOC_LIBRAY')
+    'sharepoint_doc_library': config('SHAREPOINT_DOC_LIBRAY'),
+    'sharepoint_root_dir_upload': os.path.abspath('./storage'),
+    'sharepoint_folder_name_upload': config('SHAREPOINT_FOLDER_NAME_UPLOAD'),
+    'file_name_pattern_upload': config('FILE_NAME_PATTERN_UPLOAD')
 }
 
 download = {

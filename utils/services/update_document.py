@@ -16,6 +16,7 @@ from ..functions.validate_date import compare_date
 from ..functions.save_logs import *
 from ..functions.edit_excel import edit
 from ..services.coordinates_api import obtener_coordenadas
+from ..services.upload_file import upload_files
 
 # Diccionario con los codigos ISO de Perú y sus Departamentos
 with open("./storage/localization/iso.json", "r") as f:
@@ -206,4 +207,5 @@ def update():
     export_xlsx(updated_records, failed_updates)
     export_date()
     edit( sub2_present, df_filtered)
+    upload_files()
     print('Realizado exitosamente')
