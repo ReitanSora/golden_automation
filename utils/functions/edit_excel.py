@@ -15,20 +15,27 @@ def edit(subzone_2_present: bool, df_filtered: pd.DataFrame) -> None:
 
     ws = wb.Sheets(1)
 
-    for row in range(2, ws.UsedRange.Rows.Count + 1):
-        if subzone_2_present:
+    try:
+        for row in range(2, ws.UsedRange.Rows.Count + 1):
             ws.Cells(
-                row, 3).Value = df_filtered.at[row - 2, config('EXCEL_SUBZONE_2')]
-        ws.Cells(
-            row, 3).Value = df_filtered.at[row - 2, config('EXCEL_SUBZONE_3')]
-        ws.Cells(
-            row, 4).Value = df_filtered.at[row - 2, config('EXCEL_SUBZONE_4')]
-        ws.Cells(
-            row, 5).Value = df_filtered.at[row - 2, config('EXCEL_SUBZONE_5')]
+                row, 3).Value = df_filtered.at[row - 2, config('EXCEL_SUBZONE_3')]
+            ws.Cells(
+                row, 4).Value = df_filtered.at[row - 2, config('EXCEL_SUBZONE_4')]
+            ws.Cells(
+                row, 5).Value = df_filtered.at[row - 2, config('EXCEL_SUBZONE_5')]
 
-    wb.SaveAs(os.path.abspath(
-        f'./storage/{config('FILE_NAME')[:-5]}-Actualizado.xlsx'))
+        wb.SaveAs(os.path.abspath(
+            f'./storage/{config('FILE_NAME')[:-5]}-Actualizado.xlsx'))
 
-    wb.Close(SaveChanges=True)
+        wb.Close(SaveChanges=True)
 
-    excel.Quit()
+        excel.Quit()
+
+    except Exception as e:
+
+        wb.SaveAs(os.path.abspath(
+            f'./storage/{config('FILE_NAME')[:-5]}-Fallido-{e}.xlsx'))
+
+        wb.Close(SaveChanges=True)
+
+        excel.Quit()

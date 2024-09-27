@@ -92,8 +92,10 @@ def update():
                                     ] = corrected_subzone_3
                             else:
                                 # Si la corrección falla, guardamos el registro como fallido
-                                save_failed_updates(index=index + 2, subzone_2=row[excel['excel_subzone_2']], subzone_3=row[excel['excel_subzone_3']], subzone_4=row[excel['excel_subzone_3']],
-                                                    subzone_5=row[excel['excel_subzone_5']], contextA=row['Categoría Facebook'], typeA=row['Categoria/Criterio'], fail_error=f'{excel['excel_subzone_3']} no válido')
+                                save_failed_updates(index=index + 2, subzone_2=row[excel['excel_subzone_2']], subzone_3=row[excel['excel_subzone_3']], subzone_4=row[excel['excel_subzone_4']],
+                                                    subzone_5=row[excel['excel_subzone_5']], contextA=row['Categoría Facebook'], typeA=row['Categoria/Criterio'], fail_error=f'{excel['excel_subzone_3']} no válido', failed=failed_updates)
+                                continue
+
 
                         if row[excel['excel_subzone_4']] not in cities['peru'] and row[excel['excel_subzone_4']] != "NA":
                             # Intentamos corregir el nombre del subnivel 4 usando IA
@@ -134,7 +136,7 @@ def update():
                         tk_username = extract(
                             row['URL TikTok'], 'tiktok') if row['Scan TK'] == 'Ingresada' else None
                         
-                        lat_prov, lon_prov, lat_city, lon_city = obtener_coordenadas(excel['file_name'][:-5], row[excel['excel_subzone_3']], row[excel['excel_subzone_4']])
+                        lat_prov, lon_prov, lat_city, lon_city = obtener_coordenadas({excel['file_name'][:-5]}, row[excel['excel_subzone_3']], row[excel['excel_subzone_4']])
                         # campos a actualizar
                         update_data = validate(
                             sub2_present,
@@ -195,10 +197,6 @@ def update():
                     save_failed_updates(index=index+2,
                                         fail_error=f'{traceback.format_exception(e)}',
                                         failed=failed_updates)
-            else:
-                save_failed_updates(index=index + 2,
-                                    fail_error='No ha sido actualizado ultimamente',
-                                    failed=failed_updates)
 
         else:
             save_failed_updates(index=index + 2,
