@@ -1,4 +1,5 @@
 import requests
+from src.utils.functions.normalize_text import normalize
 
 # Para insertar nuevas coordenadas en la base de datos
 from src.utils.functions.add_coordinates import add_one_coordinate
@@ -35,9 +36,9 @@ def get_coordinates_osm(direction: str):
 def obtener_coordenadas(db, collection_name, country: str, province: str, city: str):
     # Buscar en la colección si ya existen las coordenadas
     existing_coords = db[collection_name].find_one({
-        'sub_1': country,
-        'sub_3': province,
-        'sub_4': city
+        'sub_1': normalize(country),
+        'sub_3': normalize(province),
+        'sub_4': normalize(city)
     })
 
     if existing_coords:

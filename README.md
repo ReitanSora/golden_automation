@@ -1,5 +1,33 @@
 # 📝 Project README
 
+## 👥 Collaborators
+
+- **Stiven Pilca** 🌟  
+  
+  - Contributed to the creation of the project's structure and code organization.
+  - Established validation procedures to ensure data quality.
+  - Implemented the API for obtaining geographic coordinates.
+  - Developed automation for downloading and uploading Excel files in SharePoint, optimizing the workflow.
+  - Actively involved in coding and implementing the application's logic and flow.
+
+- **Mario Filian** 🚀  
+ 
+  - Collaborated on the development of the API for obtaining geographic coordinates.
+  - Implemented scripts in Excel to facilitate data management and improve efficiency.
+  - Created necessary documentation, including detailed reports on the project's functionalities.
+  - Provided valuable ideas and support throughout the development process.
+
+- **Ricardo Valle** 📊  
+ 
+  - Integrated OpenAI solutions to enhance the application's functionality.
+  - Established validation procedures to ensure data quality.
+  - Designed and executed unit tests to guarantee proper code functioning.
+  - Developed a RESTful GET service for communication between the frontend and backend.
+  - Created flowcharts to visualize the project's logic and improve process understanding.
+  
+All team members collaborated closely, contributing their expertise to achieve a cohesive and successful project.
+
+
 ## ⚙️ Environment Variables
 
 Define the following environment variables in your `.env` file to configure the project:
@@ -139,6 +167,21 @@ EXCEL_SUBZONE_5="Sublevel 5"
     python main.py
     ```
 
+### 🧪 Running Tests
+
+To run tests for the project and generate a detailed HTML report, use the following `pytest` command:
+
+```bash
+pytest --html=report.html --verbose --maxfail=5 --tb=short
+```
+
+- **`--html=report.html`**: Generates an HTML report of the test results.
+- **`--verbose`**: Provides more detailed output for each test.
+- **`--maxfail=5`**: Stops the test run after 5 failures.
+- **`--tb=short`**: Displays shortened tracebacks to make the output more concise.
+
+After running this command, a file called `report.html` will be created in the root directory. You can open this file in a browser to view a detailed test report.
+
 ### 📂 File Structure
 
 Ensure the project files follow a well-organized structure:
@@ -147,18 +190,25 @@ Ensure the project files follow a well-organized structure:
 /project_root
 │
 ├── src/
+│   ├── api/             # 
 │   ├── database/        # Handles database connections and queries
 │   ├── routes/          # Contains API endpoints and routing logic
 │   ├── models/          # Database models
 │   ├── services/        # Business logic (CRUD operations, etc.)
-│   ├── utils/           # Utilities (logging, security, etc.)
-│   └── tests/           # Unit tests
+│   ├── storage/         # 
+│   └── utils/           # Utilities (logging, security, etc.)
+│
+├── tests                # Unit tests
+│
+├── venv                 # Environment (no commit this file)
 │
 ├── .env                 # Environment variables (never commit this file)
 ├── .gitignore           # Specifies files to ignore in version control
+├── confi.py             # Decouple enviroment variables
 ├── README.md            # Project instructions (this file)
 ├── requirements.txt     # Python dependencies
-└── main.py               # Main entry point for running the application
+├── report.html          # Unit test report
+└── main.py              # Main entry point for running the application
 ```
 
 ### 🔒 Security
