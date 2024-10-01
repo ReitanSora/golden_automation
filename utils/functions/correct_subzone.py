@@ -41,7 +41,7 @@ def c_subzone_3(departamento: str) -> str:
 
     # Construir el prompt utilizando el departamento como parámetro
     prompt = (f"Corrige el siguiente nombre de departamento del Perú solo si "
-              f"estás seguro en más del 50% de confianza y la corrección propuesta "
+              f"estás seguro en más del 60% de confianza y obligatoriamente la corrección propuesta "
               f"está en la lista de departamentos válidos: {
                   departamentos_validos}. "
               f"El nombre a corregir es: '{departamento_normalizado}'.")
@@ -67,6 +67,7 @@ def c_subzone_3(departamento: str) -> str:
     # Agregar un manejo específico para términos conocidos que deben corregirse
     terminos_conocidos = {
         "L1M4": "Lima",
+        "L1m": "Lima",
         "Cajarca": "Cajamarca",
         "Lia": "Lima",  # Puedes agregar más términos conocidos si es necesario
         "Tunes": "Tumbes",
@@ -114,7 +115,7 @@ def c_subzone_4(provincia: str) -> str:
 
     # Construir el prompt utilizando la provincia como parámetro
     prompt = (f"Corrige el siguiente nombre de provincia del Perú solo si "
-              f"estás seguro en más del 50% de confianza y la corrección propuesta "
+              f"estás seguro en más del 60% de confianza y obligatoriamente la corrección propuesta "
               f"está en la lista de provincias válidas: {
                   provincias_validas}. "
               f"El nombre a corregir es: '{provincia_normalizada}'.")
@@ -147,7 +148,8 @@ def c_subzone_4(provincia: str) -> str:
         "Provincia Constitucional del Callao": "Callao",
         "Cajarca": "Cajamarca",
         "Lia": "Lima",  # Puedes agregar más términos conocidos si es necesario
-        "L1M4": "Lima"
+        "L1M4": "Lima",
+        "L1m": "Lima"
     }
 
     # Si hay coincidencias cercanas, devolver la mejor coincidencia

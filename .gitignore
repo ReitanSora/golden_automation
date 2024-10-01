@@ -2,3 +2,12 @@
 .idea
 .env
 __pycache__/
+
+# Ignorar archivos específicos en storage/logs
+storage/logs/
+
+
+# Ignorar archivos específicos en storage
+storage/date.txt
+storage/Peru-Actualizado.xlsx
+storage/Peru.xlsx

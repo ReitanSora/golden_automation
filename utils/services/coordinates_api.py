@@ -1,5 +1,6 @@
 import requests
 
+from ..functions.add_coordinates import add_one_coordinate  # Para insertar nuevas coordenadas en la base de datos
 
 # registrarse en https://www.openstreetmap.org/
 # Función para obtener coordenadas desde OpenStreetMap
@@ -28,14 +29,33 @@ def get_coordinates_osm(direction: str):
 
 
 # Función principal para obtener las coordenadas de provincia y ciudad
-def obtener_coordenadas(country: str, province: str, city: str):
+def obtener_coordenadas(db, collection_name, country: str, province: str, city: str):
+    # Buscar en la colección si ya existen las coordenadas
+    existing_coords = db[collection_name].find_one({
+        'sub_1': country,
+        'sub_3': province,
+        'sub_4': city
+    })
 
-    # Obtener coordenadas de la provincia
-    province_direction = f"{country}, {province}"
-    province_lat, province_lon = get_coordinates_osm(province_direction)
+    if existing_coords:
+        # Si existen las coordenadas, retornarlas sin hacer la llamada al API
+        print(f"Coordenadas encontradas en la base de datos para {province}, {city}.")
+        return existing_coords['lat_sub_3'], existing_coords['lon_sub_3'], existing_coords['lat_sub_4'], existing_coords['lon_sub_4']
+    else:
+        # Si no existen las coordenadas, llamar al API
+        print(f"Coordenadas no encontradas en la base de datos. Consultando el API para {province}, {city}.")
+        province_direction = f"{country}, {province}"
+        city_direction = f"{country}, {city}"
 
-    # Obtener coordenadas de la ciudad
-    city_direction = f"{country}, {city}"
-    city_lat, city_lon = get_coordinates_osm(city_direction)
+        # Obtener coordenadas de la provincia y la ciudad
+        province_lat, province_lon = get_coordinates_osm(province_direction)
+        city_lat, city_lon = get_coordinates_osm(city_direction)
 
-    return province_lat, province_lon, city_lat, city_lon
+        # Verificar si se obtuvieron correctamente las coordenadas antes de insertarlas
+        if province_lat and province_lon and city_lat and city_lon:
+            # Insertar las coordenadas en la base de datos
+            add_one_coordinate(db, collection_name, country, province, city, province_lat, province_lon, city_lat, city_lon)
+            return province_lat, province_lon, city_lat, city_lon
+        else:
+            print(f"No se pudieron obtener las coordenadas del API para {province}, {city}.")
+            return None, None, None, None

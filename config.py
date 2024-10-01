@@ -22,6 +22,7 @@ download = {
 mongo = {
     'mongodb_url': config('MONGODB_URL'),
     'mongodb_db_name': config('MONGODB_DB_NAME'),
+    'mongodb_db_name_coordinates': config('MONGODB_DB_NAME_COORDINATES'),
     'mongodb_fb_collection': config('MONGODB_FB_COLLECTION'),
     'mongodb_ig_collection': config('MONGODB_IG_COLLECTION'),
     'mongodb_tw_collection': config('MONGODB_TW_COLLECTION'),

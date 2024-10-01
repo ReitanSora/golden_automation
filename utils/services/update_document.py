@@ -30,9 +30,10 @@ with open("./storage/localization/city.json", "r") as f:
 updated_records = []
 failed_updates = []
 
+# Conectar a MongoDB usando las variables de entorno
 client = MongoClient(mongo['mongodb_url'])
-database_name = client[mongo['mongodb_db_name']]
-
+database_name = client[mongo['mongodb_db_name']]  # Base de datos "golden"
+collection_name = mongo['mongodb_db_name_coordinates']  # Colección "coordinates"
 
 def extract_id_facebook(url):
     id_facebook = url.split("/profile.php?id=")[-1]
@@ -137,7 +138,8 @@ def update():
                         tk_username = extract(
                             row['URL TikTok'], 'tiktok') if row['Scan TK'] == 'Ingresada' else None
                         
-                        lat_prov, lon_prov, lat_city, lon_city = obtener_coordenadas({excel['file_name'][:-5]}, row[excel['excel_subzone_3']], row[excel['excel_subzone_4']])
+                        lat_prov, lon_prov, lat_city, lon_city = obtener_coordenadas(database_name, collection_name, str(excel['file_name'][:-5]), row[excel['excel_subzone_3']], row[excel['excel_subzone_4']])
+                        
                         # campos a actualizar
                         update_data = validate(
                             sub2_present,
