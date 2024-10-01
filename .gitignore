@@ -2,4 +2,13 @@
 .idea
 .env
 __pycache__/
-src/storage/
+*.py[cod]
+
+.pytest_cache/
+
+src/storage/logs/registros_actualizados.xlsx
+src/storage/logs/registros_fallidos.xlsx
+
+src/storage/Peru-Actualizado.xlsx
+src/storage/date.txt
+src/storage/Peru.xlsx
