@@ -1,48 +1,168 @@
-## Environment Variables
+# 📝 Project README
 
-The environment variables should be of the following form in the .env file:
+## ⚙️ Environment Variables
 
-- SHAREPOINT_EMAIL="Here you variable"
-- SHAREPOINT_PASSWORD="Here you variable"
-- SHAREPOINT_URL_SITE="Here you variable"
-- SHAREPOINT_SITE_NAME="Here you variable"
-- SHAREPOINT_DOC_LIBRAY="Here you variable"
-- FOLDER_NAME="Here you variable"
-- FILE_NAME="Here you variable"
-- FILE_NAME_PATTERN="Here you variable"
+Define the following environment variables in your `.env` file to configure the project:
 
-### SHAREPOINT_EMAIL & SHAREPOINT_PASSWORD Variables
+```plaintext
+# SharePoint Variables
+SHAREPOINT_EMAIL="your_email"                  # Required, with quotes
+SHAREPOINT_PASSWORD="your_password"            # Required, with quotes
+SHAREPOINT_URL_SITE="https://your_site_url"    # Required, with quotes
+SHAREPOINT_SITE_NAME="your_site_name"          # Required, with quotes
+SHAREPOINT_DOC_LIBRARY="your_document_library" # Required, with quotes
 
-These variables are to authenticate you in sharepoint and access the files you want to download.
+# File Handling
+FOLDER_NAME="your_folder_name"                 # Required, with quotes
+FILE_NAME="your_file_name_or_None"             # Set a file name or None, quotes required
+FILE_NAME_PATTERN="your_pattern_or_None"       # Set a pattern or None, quotes required
 
-### SHAREPOINT_URL_SITE Variable
+# MongoDB Variables
+MONGODB_URL="mongodb://localhost:27017/"       # Required, with quotes
+MONGODB_DB_NAME="your_db_name"                 # Required, with quotes
+MONGODB_DB_NAME_COORDINATES="your_db_name"     # Required, with quotes
 
-To set this variable, you must go to sharepoint and select the site you prefer.
+# SharePoint Uploads
+SHAREPOINT_FOLDER_NAME_UPLOAD="your_upload_folder"   # Required, with quotes
+FILE_NAME_PATTERN_UPLOAD="your_pattern_or_None"      # Set a pattern or None, quotes required
 
-You have to copy the url from the site you select, you should have a url like the following.
-Example: "https://domain.sharepoint.com/sites/test2"
+# GPT API Key
+GPT_API_KEY="your_gpt_api_key"                 # Required, with quotes
 
-### SHAREPOINT_SITE_NAME Variable
+# MongoDB Collections & Fields
+MONGODB_FB_COLLECTION="your_fb_collection"     # Required, with quotes
+MONGODB_IG_COLLECTION="your_ig_collection"     # Required, with quotes
+MONGODB_TW_COLLECTION="your_tw_collection"     # Required, with quotes
+MONGODB_YT_COLLECTION="your_yt_collection"     # Required, with quotes
+MONGODB_TK_COLLECTION="your_tk_collection"     # Required, with quotes
 
-The value for this variable is the name of the site or group from the url we previously obtained.
-Example: test2
+MONGODB_FB_FIELD_NAME="username"               # Required, with quotes
+MONGODB_IG_FIELD_NAME="username"               # Required, with quotes
+MONGODB_TW_FIELD_NAME="screenName"             # Required, with quotes
+MONGODB_YT_FIELD_NAME="_id"                    # Required, with quotes
+MONGODB_TK_FIELD_NAME="username"               # Required, with quotes
 
-### SHAREPOINT_DOC_LIBRARY Variable
+# Excel Subzones
+EXCEL_SUBZONE_1="Sublevel 1"                   # Required, with quotes
+EXCEL_SUBZONE_2="Sublevel 2"                   # Required, with quotes
+EXCEL_SUBZONE_3="Sublevel 3"                   # Required, with quotes
+EXCEL_SUBZONE_4="Sublevel 4"                   # Required, with quotes
+EXCEL_SUBZONE_5="Sublevel 5"                   # Required, with quotes
+```
 
-The general path of our files should go in this variable. To do this you must access the documents part of the menu on the left once you are inside the chosen site, then in the url you will find something like this:
+### 🔍 Variable Details
 
-Example: "https://domain.sharepoint.com/sites/test2/Documentos%20compartidos/----/-----"
+1. **SHAREPOINT_EMAIL** & **SHAREPOINT_PASSWORD**
+   - Used for authenticating with SharePoint. These values must be wrapped in double quotes (`""`).
 
-Now, in our variable you must place: "Documentos compatidos/"
+2. **SHAREPOINT_URL_SITE**
+   - URL of the SharePoint site you want to access. Example: `"https://yourcompany.sharepoint.com/sites/yoursite"`.
 
-### FOLDER_NAME Variable
+3. **SHAREPOINT_DOC_LIBRARY**
+   - Path to the document library inside SharePoint. Example: `"Documents Shared/"`.
 
-This variable must include the name of the folder that contains the files.
+4. **FILE_NAME** & **FILE_NAME_PATTERN**
+   - Use `"None"` if you want to download all files or if no pattern is required.
 
-### FILE_NAME Variable
+5. **MONGODB_URL** & **Database Names**
+   - MongoDB connection string and database names must be wrapped in quotes. Example: `"mongodb://localhost:27017/"`.
 
-In this variable you must specify the file you want to download, otherwise set None so that all files from the specified path are downloaded.
+6. **GPT_API_KEY**
+   - Your GPT API key for enabling AI functionalities in your app. Must be wrapped in quotes.
 
-### FILE_NAME_PATTERN Variable
+7. **Collection and Field Names**
+   - Each social media platform (Facebook, Instagram, etc.) uses a unique collection and field name. Ensure these are clearly specified and enclosed in quotes.
 
-In this variable you must specify a pattern in the name of the files you want to download, if there is no pattern you must set it to None.
+8. **Excel Subzones**
+   - These fields represent subzones in your Excel data. Adjust as needed based on your data structure.
+
+### 📋 Example Configuration
+
+Here is an example of a properly filled `.env` file for your reference:
+
+```plaintext
+SHAREPOINT_EMAIL="user@example.com"
+SHAREPOINT_PASSWORD="SuperSecretPassword"
+SHAREPOINT_URL_SITE="https://yourcompany.sharepoint.com/sites/projectsite"
+SHAREPOINT_SITE_NAME="projectsite"
+SHAREPOINT_DOC_LIBRARY="Documents Shared/"
+FOLDER_NAME="project/documents"
+FILE_NAME="data.xlsx"
+FILE_NAME_PATTERN=None
+
+MONGODB_URL="mongodb://localhost:27017/"
+MONGODB_DB_NAME="mydatabase"
+MONGODB_DB_NAME_COORDINATES="coordinates"
+
+SHAREPOINT_FOLDER_NAME_UPLOAD="project/uploads"
+FILE_NAME_PATTERN_UPLOAD="Updated"
+
+GPT_API_KEY="your_gpt_api_key"
+
+MONGODB_FB_COLLECTION="fb_collection"
+MONGODB_IG_COLLECTION="ig_collection"
+MONGODB_TW_COLLECTION="tw_collection"
+MONGODB_YT_COLLECTION="yt_collection"
+MONGODB_TK_COLLECTION="tk_collection"
+
+MONGODB_FB_FIELD_NAME="username"
+MONGODB_IG_FIELD_NAME="username"
+MONGODB_TW_FIELD_NAME="screenName"
+MONGODB_YT_FIELD_NAME="_id"
+MONGODB_TK_FIELD_NAME="username"
+
+EXCEL_SUBZONE_1="Sublevel 1"
+EXCEL_SUBZONE_2="Sublevel 2"
+EXCEL_SUBZONE_3="Sublevel 3"
+EXCEL_SUBZONE_4="Sublevel 4"
+EXCEL_SUBZONE_5="Sublevel 5"
+```
+
+### 🚀 How to Use
+
+1. **Clone the Repository**:
+    ```bash
+    git clone <repository_url>
+    ```
+
+2. **Set Up the Environment Variables**:
+    - Create a `.env` file in the root directory.
+    - Copy the environment variables listed above into your `.env` file and replace `"your_variable"` with your actual values.
+
+3. **Install Dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4. **Run the Application**:
+    ```bash
+    python app.py
+    ```
+
+### 📂 File Structure
+
+Ensure the project files follow a well-organized structure:
+
+```
+/project_root
+│
+├── src/
+│   ├── database/        # Handles database connections and queries
+│   ├── routes/          # Contains API endpoints and routing logic
+│   ├── models/          # Database models
+│   ├── services/        # Business logic (CRUD operations, etc.)
+│   ├── utils/           # Utilities (logging, security, etc.)
+│   └── tests/           # Unit tests
+│
+├── .env                 # Environment variables (never commit this file)
+├── .gitignore           # Specifies files to ignore in version control
+├── README.md            # Project instructions (this file)
+├── requirements.txt     # Python dependencies
+└── app.py               # Main entry point for running the application
+```
+
+### 🔒 Security
+
+- **.env File**: Ensure your `.env` file is included in `.gitignore` to prevent exposing sensitive data (credentials, API keys) in version control.
+  
+- **Best Practices**: Regularly rotate credentials and use environment variables for managing secrets and sensitive configuration.
