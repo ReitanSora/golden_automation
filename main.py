@@ -1,6 +1,6 @@
 from config import download
-from utils.services.download_file import get_file, get_files, get_files_by_pattern
-from utils.services.update_document import update
+from src.services.download_file import get_file, get_files, get_files_by_pattern
+from src.services.update_document import update
 
 FOLDER_NAME = download['folder_name']
 FILE_NAME = download['file_name']

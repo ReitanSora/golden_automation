@@ -4,11 +4,11 @@ from difflib import get_close_matches
 import json
 
 # Diccionario con los codigos ISO de Perú y sus Departamentos
-with open("./storage/localization/iso.json", "r") as f:
+with open("./src/storage/localization/iso.json", "r") as f:
     department_iso = json.load(f)
 
 # Diccionario con las ciudades de Perú
-with open("./storage/localization/city.json", "r") as f:
+with open("./src/storage/localization/city.json", "r") as f:
     cities = json.load(f)
 
 

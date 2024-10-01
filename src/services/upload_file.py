@@ -1,4 +1,4 @@
-from utils.api.office365_api import SharePoint
+from src.api.office365_api import SharePoint
 from config import sharepoint
 
 import re

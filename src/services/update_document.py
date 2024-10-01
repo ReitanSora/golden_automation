@@ -1,29 +1,28 @@
-import traceback
 import pandas as pd
 import json
 from config import mongo, excel
 from pymongo import MongoClient
 
-from ..functions.export_to_xlsx import export_xlsx
-from ..functions.xlsx_to_df import import_xlsx
-from ..functions.validate_update_data import validate
-from ..functions.extract_username import extract
-from ..functions.normalize_text import normalize
-from ..functions.update_one_mongodb import update_one
-from ..functions.export_date import export_date
-from ..functions.correct_subzone import c_subzone_3, c_subzone_4
-from ..functions.validate_date import compare_date
-from ..functions.save_logs import *
-from ..functions.edit_excel import edit
-from ..services.coordinates_api import obtener_coordenadas
-from ..services.upload_file import upload_files
+from src.utils.functions.export_to_xlsx import export_xlsx
+from src.utils.functions.xlsx_to_df import import_xlsx
+from src.utils.functions.validate_update_data import validate
+from src.utils.functions.extract_username import extract
+from src.utils.functions.normalize_text import normalize
+from src.utils.functions.update_one_mongodb import update_one
+from src.utils.functions.export_date import export_date
+from src.utils.functions.correct_subzone import c_subzone_3, c_subzone_4
+from src.utils.functions.validate_date import compare_date
+from src.utils.functions.save_logs import *
+from src.utils.functions.edit_excel import edit
+from src.services.coordinates_api import obtener_coordenadas
+from src.services.upload_file import upload_files
 
 # Diccionario con los codigos ISO de Perú y sus Departamentos
-with open("./storage/localization/iso.json", "r") as f:
+with open("./src/storage/localization/iso.json", "r") as f:
     department_iso = json.load(f)
 
 # Diccionario con las ciudades de Perú
-with open("./storage/localization/city.json", "r") as f:
+with open("./src/storage/localization/city.json", "r") as f:
     cities = json.load(f)
 
 # Arrays para almacenar los registros modificados y los que fallaron
@@ -54,7 +53,7 @@ def update():
             if pd.isna(row[col]):
                 df_filtered.at[index, col] = ''
 
-        fecha = open('storage/date.txt', "r").read()
+        fecha = open('src/storage/date.txt', "r").read()
         
         if pd.isna(row['Fecha']) == False:
 
@@ -198,7 +197,7 @@ def update():
                                             failed=failed_updates)
                 except Exception as e:
                     save_failed_updates(index=index+2,
-                                        fail_error=f'{traceback.format_exception(e)}',
+                                        fail_error=f'{e}',
                                         failed=failed_updates)
 
         else:

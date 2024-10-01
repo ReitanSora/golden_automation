@@ -3,7 +3,7 @@ from decouple import config
 
 def import_xlsx():
     # Leer el archivo Excel
-    df = pd.read_excel(f'./storage/{config('FILE_NAME') if config('FILE_NAME') != None else 'Peru.xlsx'}')
+    df = pd.read_excel(f'./src/storage/{config('FILE_NAME') if config('FILE_NAME') != None else 'Peru.xlsx'}')
 
     if config('EXCEL_SUBZONE_2') in df.columns:
         # Filtrar las columnas que necesitamos del Excel

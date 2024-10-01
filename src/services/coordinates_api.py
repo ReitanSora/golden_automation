@@ -1,6 +1,6 @@
 import requests
 
-from ..functions.add_coordinates import add_one_coordinate  # Para insertar nuevas coordenadas en la base de datos
+from src.utils.functions.add_coordinates import add_one_coordinate  # Para insertar nuevas coordenadas en la base de datos
 
 # registrarse en https://www.openstreetmap.org/
 # Función para obtener coordenadas desde OpenStreetMap
