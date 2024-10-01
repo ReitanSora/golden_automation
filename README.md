@@ -136,7 +136,7 @@ EXCEL_SUBZONE_5="Sublevel 5"
 
 4. **Run the Application**:
     ```bash
-    python app.py
+    python main.py
     ```
 
 ### 📂 File Structure
@@ -158,7 +158,7 @@ Ensure the project files follow a well-organized structure:
 ├── .gitignore           # Specifies files to ignore in version control
 ├── README.md            # Project instructions (this file)
 ├── requirements.txt     # Python dependencies
-└── app.py               # Main entry point for running the application
+└── main.py               # Main entry point for running the application
 ```
 
 ### 🔒 Security
