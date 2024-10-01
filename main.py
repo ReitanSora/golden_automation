@@ -32,4 +32,4 @@ if __name__ == '__main__':
         get_files(FOLDER_NAME)
 
     read_update_excel()
-    app.run(debug=True)
+    app.run(debug=False)
