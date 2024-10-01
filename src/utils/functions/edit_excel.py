@@ -9,7 +9,7 @@ def edit(subzone_2_present: bool, df_filtered: pd.DataFrame) -> None:
     excel = win32.Dispatch('Excel.Application')
 
     wb = excel.Workbooks.Open(os.path.abspath(
-        f'./src/storage/{config('FILE_NAME')}'))
+        f'./src/storage/downloaded/{config('FILE_NAME')}'))
 
     excel.Visible = False
 
@@ -25,7 +25,7 @@ def edit(subzone_2_present: bool, df_filtered: pd.DataFrame) -> None:
                 row, 5).Value = df_filtered.at[row - 2, config('EXCEL_SUBZONE_5')]
 
         wb.SaveAs(os.path.abspath(
-            f'./src/storage/{config('FILE_NAME')[:-5]}-Actualizado.xlsx'))
+            f'./src/storage/downloaded/{config('FILE_NAME')[:-5]}-Actualizado.xlsx'))
 
         wb.Close(SaveChanges=True)
 
@@ -34,7 +34,7 @@ def edit(subzone_2_present: bool, df_filtered: pd.DataFrame) -> None:
     except Exception as e:
 
         wb.SaveAs(os.path.abspath(
-            f'./src/storage/{config('FILE_NAME')[:-5]}-Fallido-{e}.xlsx'))
+            f'./src/storage/downloaded/{config('FILE_NAME')[:-5]}-Fallido-{e}.xlsx'))
 
         wb.Close(SaveChanges=True)
 

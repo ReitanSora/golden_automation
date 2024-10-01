@@ -12,3 +12,5 @@ src/storage/logs/registros_fallidos.xlsx
 src/storage/Peru-Actualizado.xlsx
 src/storage/date.txt
 src/storage/Peru.xlsx
+
+*.xlsx
