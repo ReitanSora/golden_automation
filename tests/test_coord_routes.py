@@ -61,7 +61,7 @@ def test_get_coordinates_missing_params(client):
     # Verificamos que el estado sea 400 (error por falta de parámetros).
     assert response.status_code == 400
     assert response.json == {  # Verificamos que el mensaje de error sea el correcto.
-        "error": "Faltan parámetros: subnivel_1, subnivel_3, subnivel_4 son requeridos"
+        "error": "Faltan parámetros o son inconsistentes: subnivel_1, subnivel_3, subnivel_4 mal ingresados"
     }
 
 

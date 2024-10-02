@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from src.services.coordinates_api import obtener_coordenadas
 from pymongo import MongoClient
+from src.utils.functions.normalize_text import normalize
 from config import mongo
 
 coord_bp = Blueprint('coord', __name__)
@@ -12,12 +13,12 @@ collection_name = mongo['mongodb_db_name_coordinates']
 
 @coord_bp.route('/obtener-coordenadas', methods=['GET'])
 def get_coordinates():
-    subnivel_1 = request.args.get('subnivel_1')
-    subnivel_3 = request.args.get('subnivel_3')
-    subnivel_4 = request.args.get('subnivel_4')
+    subnivel_1 = normalize(request.args.get('subnivel_1'))
+    subnivel_3 = normalize(request.args.get('subnivel_3'))
+    subnivel_4 = normalize(request.args.get('subnivel_4'))
 
-    if not subnivel_1 or not subnivel_3 or not subnivel_4:
-        return jsonify({"error": "Faltan parámetros: subnivel_1, subnivel_3, subnivel_4 son requeridos"}), 400
+    if subnivel_1 == "NA" or subnivel_3 == "NA" or subnivel_4 == "NA":
+        return jsonify({"error": "Faltan parámetros o son inconsistentes: subnivel_1, subnivel_3, subnivel_4 mal ingresados"}), 400
 
     lat_prov, lon_prov, lat_city, lon_city = obtener_coordenadas(
         database_name, collection_name, subnivel_1, subnivel_3, subnivel_4)
