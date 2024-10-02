@@ -2,11 +2,12 @@ from decouple import config
 import pandas as pd
 import os
 import win32com.client as win32
+import pythoncom
 
 
 def edit(subzone_2_present: bool, df_filtered: pd.DataFrame) -> None:
 
-    excel = win32.Dispatch('Excel.Application')
+    excel = win32.Dispatch('Excel.Application', pythoncom.CoInitialize())
 
     wb = excel.Workbooks.Open(os.path.abspath(
         f'./src/storage/downloaded/{config('FILE_NAME')}'))

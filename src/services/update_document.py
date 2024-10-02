@@ -32,7 +32,9 @@ failed_updates = []
 # Conectar a MongoDB usando las variables de entorno
 client = MongoClient(mongo['mongodb_url'])
 database_name = client[mongo['mongodb_db_name']]  # Base de datos "golden"
-collection_name = mongo['mongodb_db_name_coordinates']  # Colección "coordinates"
+# Colección "coordinates"
+collection_name = mongo['mongodb_db_name_coordinates']
+
 
 def extract_id_facebook(url):
     id_facebook = url.split("/profile.php?id=")[-1]
@@ -43,7 +45,7 @@ def extract_id_facebook(url):
 
 def update():
     df_filtered = import_xlsx()
-    
+
     sub2_present = excel['excel_subzone_2'] in df_filtered.columns
 
     # Recorremos cada fila del DataFrame filtrado
@@ -54,14 +56,15 @@ def update():
                 df_filtered.at[index, col] = ''
 
         fecha = open('src/storage/date.txt', "r").read()
-        
+
         if pd.isna(row['Fecha']) == False:
 
             if compare_date(saved_date=fecha, new_date=str(row['Fecha'])):
 
                 try:
 
-                    row[excel['excel_subzone_2']] = row[excel['excel_subzone_2']] if sub2_present else None
+                    row[excel['excel_subzone_2']] = row[excel['excel_subzone_2']
+                                                        ] if sub2_present else None
 
                     # Comprobamos si alguna columna de Scan tiene "Ingresada"
                     if any(row[['Scan FB', 'Scan IG', 'Scan TW', 'Scan YT', 'Scan TK']] == 'Ingresada') and not (
@@ -97,7 +100,6 @@ def update():
                                                     subzone_5=row[excel['excel_subzone_5']], contextA=row['Categoría Facebook'], typeA=row['Categoria/Criterio'], fail_error=f'{excel['excel_subzone_3']} no válido', failed=failed_updates)
                                 continue
 
-
                         if row[excel['excel_subzone_4']] not in cities['peru'] and row[excel['excel_subzone_4']] != "NA":
                             # Intentamos corregir el nombre del subnivel 4 usando IA
                             corrected_subzone_4 = c_subzone_4(
@@ -113,10 +115,14 @@ def update():
                                 continue
 
                         if row[excel['excel_subzone_2']] != None:
-                            df_filtered.at[index, excel['excel_subzone_2']] = row[excel['excel_subzone_2']]
-                        df_filtered.at[index, excel['excel_subzone_3']] = row[excel['excel_subzone_3']]
-                        df_filtered.at[index, excel['excel_subzone_4']] = row[excel['excel_subzone_4']]
-                        df_filtered.at[index, excel['excel_subzone_5']] = row[excel['excel_subzone_5']]
+                            df_filtered.at[index, excel['excel_subzone_2']
+                                           ] = row[excel['excel_subzone_2']]
+                        df_filtered.at[index, excel['excel_subzone_3']
+                                       ] = row[excel['excel_subzone_3']]
+                        df_filtered.at[index, excel['excel_subzone_4']
+                                       ] = row[excel['excel_subzone_4']]
+                        df_filtered.at[index, excel['excel_subzone_5']
+                                       ] = row[excel['excel_subzone_5']]
 
                         # Extraemos los usernames de las redes sociales que tengan "Ingresada" en Scan
                         fb_username = extract(
@@ -136,9 +142,10 @@ def update():
                             row['URL YouTube'], 'youtube') if row['Scan YT'] == 'Ingresada' else None
                         tk_username = extract(
                             row['URL TikTok'], 'tiktok') if row['Scan TK'] == 'Ingresada' else None
-                        
-                        lat_prov, lon_prov, lat_city, lon_city = obtener_coordenadas(database_name, collection_name, str(excel['file_name'][:-5]), row[excel['excel_subzone_3']], row[excel['excel_subzone_4']])
-                        
+
+                        lat_prov, lon_prov, lat_city, lon_city = obtener_coordenadas(database_name, collection_name, str(
+                            excel['file_name'][:-5]), row[excel['excel_subzone_3']], row[excel['excel_subzone_4']])
+
                         # campos a actualizar
                         update_data = validate(
                             sub2_present,
@@ -148,7 +155,7 @@ def update():
                             lon_prov,
                             lat_city,
                             lon_city
-                            )
+                        )
 
                         def process_update(collection_name, field_name, username, platform_name):
                             if username:
@@ -157,7 +164,8 @@ def update():
                                 if len(find_result) > 0:
                                     save_updated_documents(username=username,
                                                            doc=find_result[0],
-                                                           platform=f'{platform_name}',
+                                                           platform=f'{
+                                                               platform_name}',
                                                            subzone_2=row[excel['excel_subzone_2']],
                                                            subzone_3=row[excel['excel_subzone_3']],
                                                            subzone_4=row[excel['excel_subzone_4']],
@@ -175,7 +183,8 @@ def update():
                                 else:
                                     save_failed_updates(index=index+2,
                                                         username=username,
-                                                        platform=f'{platform_name}',
+                                                        platform=f'{
+                                                            platform_name}',
                                                         fail_error='Usuario no encontrado en la bd',
                                                         failed=failed_updates)
 
@@ -204,9 +213,10 @@ def update():
             save_failed_updates(index=index + 2,
                                 fail_error='No cuenta con una fecha',
                                 failed=failed_updates)
-    
+
     export_xlsx(updated_records, failed_updates)
     export_date()
-    edit( sub2_present, df_filtered)
+    edit(sub2_present, df_filtered)
     upload_files()
-    print('Realizado exitosamente')
+    
+    return True
