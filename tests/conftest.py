@@ -1,6 +1,6 @@
 import pytest
 # Importamos la aplicación Flask desde el archivo principal
-from main import app as flask_app
+from main import initialize_app as flask_app
 
 
 @pytest.fixture

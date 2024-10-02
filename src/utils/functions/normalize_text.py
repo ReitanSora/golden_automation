@@ -16,7 +16,7 @@ def normalize(text):
     # Validaciones adicionales
     if (text_str == "" or
         text_str.isdigit() or
-        text_str in ['True', 'False', 'None', 'null'] or
+        text_str in ['True', 'False', 'None', 'null','-','NA','Na'] or
         len(text_str) == 1 and not text_str.isalpha() or
             # Verifica que haya al menos un carácter alfanumérico
             not any(char.isalnum() for char in text_str)):
